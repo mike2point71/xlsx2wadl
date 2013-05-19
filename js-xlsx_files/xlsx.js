@@ -1019,10 +1019,10 @@ function sheet_to_row_object_array(sheet){
 	return outSheet;
 }
 
-function sheet_to_jquery_sheet_object(sheet){
+function sheet_to_jquery_sheet_object(sheet, sheetName){
 	var val, rowObject, range, columnHeaders, emptyRow, C;
 	var longestRow = 0;
-	var outSheet = {"title" : "Title", rows:[]};
+	var outSheet = {"title" : sheetName, rows:[]};
 	//alert("Got sheet: " + JSON.stringify(outSheet));
 	if (sheet["!ref"]) {
 		range = decode_range(sheet["!ref"]);

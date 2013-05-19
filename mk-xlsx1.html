@@ -49,7 +49,8 @@ document.getElementById('files').addEventListener('change', handleFileSelect, fa
 function to_json(workbook) {
 	var result = [];
 	workbook.SheetNames.forEach(function(sheetName) {
-		result.push(XLSX.utils.sheet_to_jquery_sheet_object(workbook.Sheets[sheetName]));
+    var sheet = workbook.Sheets[sheetName];
+		result.push(XLSX.utils.sheet_to_jquery_sheet_object(sheet, sheetName));
 	});
 	return result;
 }
