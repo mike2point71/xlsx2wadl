@@ -533,7 +533,11 @@ function parseSheet(data) {
 
 	/* 18.3.1.35 dimension CT_SheetDimension ? */
 	var ref = data.match(/<dimension ref="([^"]*)"\s*\/>/);
-	if(ref && ref.indexOf(":") !== -1) s["!ref"] = ref[1];
+	if(ref && ref.indexOf(":") !== -1) {
+		s["!ref"] = ref[1];
+	} else if (ref && ref[1]) {
+		s["!ref"] = "A1:" + ref[1];
+	}
 
 	var refguess = {s: {r:1000000, c:1000000}, e: {r:0, c:0} };
 	var q = ["v","f"];
@@ -965,11 +969,7 @@ function decode_col(c) { var d = 0, i = 0; for(; i !== c.length; ++i) d = 26*d +
 function decode_row(rowstr) { return Number(rowstr) - 1; }
 function split_cell(cstr) { return cstr.replace(/(\$?[A-Z]*)(\$?[0-9]*)/,"$1,$2").split(","); }
 function decode_cell(cstr) { var splt = split_cell(cstr); return { c:decode_col(splt[0]), r:decode_row(splt[1]) }; }
-function decode_range(range) {
-	alert("passedRange: " + JSON.stringify(range));
-	var x =range.split(":").map(decode_cell);
-	return {s:x[0],e:x[x.length-1]};
-}
+function decode_range(range) { var x =range.split(":").map(decode_cell); return {s:x[0],e:x[x.length-1]}; }
 function encode_range(range) { return encode_cell(range.s) + ":" + encode_cell(range.e); }
 /**
  * Convert a sheet into an array of objects where the column headers are keys.
@@ -1027,10 +1027,8 @@ function sheet_to_jquery_sheet_object(sheet, sheetName){
 	var val, rowObject, range, columnHeaders, emptyRow, C;
 	var longestRow = 0;
 	var outSheet = {"title" : sheetName, rows:[]};
-	//alert("Got sheet: " + JSON.stringify(outSheet));
 	if (sheet["!ref"]) {
 		range = decode_range(sheet["!ref"]);
-		alert("Range info: " + JSON.stringify(range));
 		for (var R = 0; R <= range.e.r; ++R) {
 			rowObject = {"height":"18px", "columns":[]};
 			for (C = 0; C <= range.e.c; ++C) {
@@ -1051,10 +1049,8 @@ function sheet_to_jquery_sheet_object(sheet, sheetName){
 				rowObject.columns.push(colObject);
 			}
 			outSheet.rows.push(rowObject);
-			//alert("now sheet: " + JSON.stringify(outSheet));
 		}
 	}
-	//alert("About to return: " + JSON.stringify(outSheet));
 	return outSheet;
 }
 
