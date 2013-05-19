@@ -1026,13 +1026,10 @@ function sheet_to_jquery_sheet_object(sheet, sheetName){
 	//alert("Got sheet: " + JSON.stringify(outSheet));
 	if (sheet["!ref"]) {
 		range = decode_range(sheet["!ref"]);
-
-		for (var R = range.s.r; R <= range.e.r; ++R) {
-			emptyRow = true;
-			//Row number is recorded in the prototype
-			//so that it doesn't appear when stringified.
+		alert("Range info: " + JSON.stringify(range));
+		for (var R = 0; R <= range.e.r; ++R) {
 			rowObject = {"height":"18px", "columns":[]};
-			for (C = range.s.c; C <= range.e.c; ++C) {
+			for (C = 0; C <= range.e.c; ++C) {
 				val = sheet[encode_cell({
 					c: C,
 					r: R
@@ -1042,7 +1039,6 @@ function sheet_to_jquery_sheet_object(sheet, sheetName){
 					case 's': case 'str': case 'b': case 'n':
 						if(val.v !== undefined) {
 							colObject["value"] = val.v;
-							emptyRow = false;
 						}
 						break;
 					case 'e': break; /* throw */
