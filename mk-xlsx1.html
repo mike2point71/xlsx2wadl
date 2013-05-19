@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://niggler.github.io/js-xlsx/ -->
+<html><head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+<style>
+#drop{
+	border:2px dashed #bbb;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	padding:25px;
+	text-align:center;
+	font:20pt bold,"Vollkorn";color:#bbb
+}
+#b64data{
+	width:100%;
+}
+</style>
+</head><body><b>JS-XLSX + jQuery.sheet Demo</b><br>
+
+<div id="drop">Drop an XLSX file here to see sheet data.</div>
+<pre id="out"></pre>
+<br>
+<script type="text/javascript" async="" src="./js-xlsx_files/ga.js"></script>
+<script src="./js-xlsx_files/jszip.js"></script>
+<script src="./js-xlsx_files/xlsx.js"></script>
+<script src="./js-xlsx_files/shim.js"></script>
+<link rel="stylesheet" type="text/css" href="./jqs_resources/jquery-ui/theme/jquery-ui.min.css" />
+<script type="text/javascript" src="./jqs_resources/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="./jqs_resources/jquery-ui/ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="./jqs_resources/jquery.sheet.js"></script>
+<script>
+function to_json(workbook) {
+	var result = [];
+	workbook.SheetNames.forEach(function(sheetName) {
+		result.push(XLSX.utils.sheet_to_jquery_sheet_object(workbook.Sheets[sheetName]));
+	});
+	return result;
+}
+
+function process_wb(wb) {
+	var output = "";
+	var jsonTableData = to_json(wb);
+	output = JSON.stringify(jsonTableData);
+	//alert("Here is output: " + output);
+	
+
+	if(out.innerText === undefined) out.textContent = output;
+	else out.innerText = output;
+	var tables = $.sheet.dts.toTables.json(jsonTableData);
+
+  $('#sheetFromDts')
+    .html(tables)
+    .height($(window).height() - 30)
+    .sheet();
+
+  $.sheet.instance.each(function (i) {
+    $.sheet.scrollLocker(i);
+    $.sheet.switchSheetLocker(i);
+  });
+}
+
+var drop = document.getElementById('drop');
+function handleDrop(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	var files = e.dataTransfer.files;
+	var i,f;
+	for (i = 0, f = files[i]; i != files.length; ++i) {
+		var reader = new FileReader();
+		var name = f.name;
+		reader.onload = function(e) {
+			var data = e.target.result;
+			//var wb = XLSX.read(data, {type: 'binary'});
+			var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+			var wb = XLSX.read(btoa(arr), {type: 'base64'});
+			process_wb(wb);
+		};
+		//reader.readAsBinaryString(f);
+		reader.readAsArrayBuffer(f);
+	}
+}
+
+function handleDragover(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	e.dataTransfer.dropEffect = 'copy';
+}
+
+if(drop.addEventListener) {
+	drop.addEventListener('dragenter', handleDragover, false);
+	drop.addEventListener('dragover', handleDragover, false);
+	drop.addEventListener('drop', handleDrop, false);
+}
+$.sheet.preLoad('./jqs_resources/');
+$(function () {
+  alert(JSON.stringify(jsonData));     
+});
+</script>
+
+<div id="dtsUI" style="display: none;"><textarea id="dtsValue" style="width: 100%; height: 100%;"></textarea></div>
+
+<div id="sheetFromDts" title="Came from the dts output from the sheet to the left"></div>
+</body></html>
