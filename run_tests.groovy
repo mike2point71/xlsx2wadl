@@ -42,7 +42,7 @@ Browser.drive {
   answers = ['C','','','','nachos']
   checkColumn(3, answers)
 
-  //TEST #002:  Load a sheet with some formulas ex. =TRUE().  Make sure they are there.
+  //TEST #003:  Load a sheet with some formulas ex. =TRUE().  Make sure they are there.
   to TestingPage
   uploadFile(absPath, "xlsxtest003.xlsx")
   answers = ['C','Attended','TRUE','TRUE','TRUE']
