@@ -49,13 +49,11 @@ Browser.drive {
   answers = ['A','1','2','3']
   checkColumn(1, answers)
   
-  /*
   to TestingPage
-  uploadFile(absPath, "xlsxtest003.xlsx")
-  answers = ['C','Attended','TRUE','TRUE','TRUE','TRUE']
+  uploadFile(absPath, "xlsxtest004.xlsx")
+  answers = ['C','Attended','TRUE','TRUE','TRUE','FALSE']
   checkColumn(3, answers)
-  */
 
   println "ALL ASSERTIONS PASSED!!!"
 
-}
+}.quit()
