@@ -2379,6 +2379,7 @@ jQuery.sheet = {
 								if (jS.isBusy()) return false;
 
 								if (jS.isTd(e.target)) {
+									console.log("Here is the mousedown");
 									jS.evt.cellOnMouseDown(e);
 									return false;
 								}

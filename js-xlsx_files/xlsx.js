@@ -532,6 +532,7 @@ function parseSheet(data) {
 	var s = {};
 
 	/* 18.3.1.35 dimension CT_SheetDimension ? */
+	console.log(data);
 	var ref = data.match(/<dimension ref="([^"]*)"\s*\/>/);
 	if(ref && ref.indexOf(":") !== -1) {
 		s["!ref"] = ref[1];
@@ -561,7 +562,17 @@ function parseSheet(data) {
 			var cell = parsexmltag((c.match(/<c[^>]*>/)||[c])[0]); delete cell[0];
 			var d = c.substr(c.indexOf('>')+1);
 			var p = {};
-			q.forEach(function(f){var x=d.match(matchtag(f));if(x)p[f]=unescapexml(x[1]);});
+			q.forEach(function(f){
+				var x=d.match(matchtag(f));
+				if(x){
+					if(x['input'][1] === 'f'){
+						var formulaXml = x["input"];
+						var formula = formulaXml.match(/<f([^\u2603]*)<\/f>/)[1].split('>')[1];  //This is really bad, but why are we using regex at all and not some kind of xml library?
+						p['formula'] = formula;
+					}
+					p[f]=unescapexml(x[1]);
+				}
+			});
 
 			/* SCHEMA IS ACTUALLY INCORRECT HERE.  IF A CELL HAS NO T, EMIT "" */
 			if(cell.t === undefined && p.v === undefined) { p.t = "str"; p.v = undefined; }
@@ -1032,19 +1043,29 @@ function sheet_to_jquery_sheet_object(sheet, sheetName){
 		for (var R = 0; R <= range.e.r; ++R) {
 			rowObject = {"height":"18px", "columns":[]};
 			for (C = 0; C <= range.e.c; ++C) {
+				//need to get the x from get_formulae and check if theres a formula, only if not: do the value.
 				val = sheet[encode_cell({
 					c: C,
 					r: R
 				})];
+				console.log("Val: " + JSON.stringify(val));
 				var colObject = {};
-				if(val !== undefined) switch(val.t){
-					case 's': case 'str': case 'b': case 'n':
-						if(val.v !== undefined) {
-							colObject["value"] = val.v;
-						}
-						break;
-					case 'e': break; /* throw */
-					default: throw 'unrecognized type ' + val.t;
+				if(val['formula']){
+					colObject['formula'] = val['formula'];
+				} else {
+					if(val !== undefined) switch(val.t){
+						case 's': case 'str': case 'n':
+							if(val.v !== undefined) {
+								colObject["value"] = val.v;
+							}
+							break;
+						case 'b':
+							if(val.v === true)colObject['formula'] = "TRUE()";
+							if(val.v === false)colObject['formula'] = "FALSE()";
+							break;
+						case 'e': break; /* throw */
+						default: throw 'unrecognized type ' + val.t;
+					}
 				}
 				rowObject.columns.push(colObject);
 			}

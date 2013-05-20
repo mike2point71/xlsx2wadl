@@ -42,12 +42,20 @@ Browser.drive {
   answers = ['C','','','','nachos']
   checkColumn(3, answers)
 
-  //TEST #003:  Load a sheet with some formulas ex. =TRUE().  Make sure they are there.
+  //TEST #003:  Load a sheet with some formulas ex. =A1+A2.  Make sure they are there and still dynamic.
+  //NOT DONE!!!!!!
+  to TestingPage
+  uploadFile(absPath, "xlsxtest003.xlsx")
+  answers = ['A','1','2','3']
+  checkColumn(1, answers)
+  
+  /*
   to TestingPage
   uploadFile(absPath, "xlsxtest003.xlsx")
   answers = ['C','Attended','TRUE','TRUE','TRUE','TRUE']
   checkColumn(3, answers)
-  
+  */
+
   println "ALL ASSERTIONS PASSED!!!"
 
-}.quit()
+}
