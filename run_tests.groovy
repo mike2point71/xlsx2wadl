@@ -12,6 +12,18 @@ println urlString
 
 class TestingPage extends Page {
   static url = "mk-xlsx1.html"
+  static content = {
+      tbody(required: false) { $("table", title: "Sheet1").find("tbody") }
+  }
+  def uploadFile(passPath, fileName) {
+    $("form").fileUpload = passPath + "/testing_resources/" + fileName
+    waitFor {tbody.present}
+  }
+  def checkColumn(colNumber, columnValues){
+    tbody.children().eachWithIndex{tr, ndx->
+      assert tr.children().filter("td")[colNumber].text() == columnValues[ndx]
+    }
+  }
 }
 
 Browser.drive {
@@ -20,24 +32,16 @@ Browser.drive {
   
   //TEST #001:  Load a sheet with 4 things in the first column.  Make sure they are there.
   to TestingPage
-  $("form").fileUpload = absPath + "/testing_resources/xlsxtest001.xlsx"
-  waitFor{ $("table", title: "Sheet1") }
-  tbody = $("table", title: "Sheet1").find("tbody")
+  uploadFile(absPath, "xlsxtest001.xlsx")
   answers = ['A','a','s','d','df']
-  tbody.children().eachWithIndex{tr, ndx->
-    assert tr.find("td").next("td").text() == answers[ndx]
-  }
+  checkColumn(1, answers)
 
   //TEST #002:  Load a sheet with something out in the middle of nowhere.  Make sure there arent missing cells.
   to TestingPage
-  $("form").fileUpload = absPath + "/testing_resources/xlsxtest002.xlsx"
-  waitFor{ $("table", title: "Sheet1") }
-  tbody = $("table", title: "Sheet1").find("tbody")
+  uploadFile(absPath, "xlsxtest002.xlsx")
   answers = ['C','','','','nachos']
-  tbody.children().eachWithIndex{tr, ndx->
-    assert tr.find("td").next("td").next("td").next("td").text() == answers[ndx]
-  }
-
+  checkColumn(3, answers)
+  
   println "ALL ASSERTIONS PASSED!!!"
 
 }.quit()
