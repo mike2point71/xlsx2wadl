@@ -45,7 +45,7 @@ Browser.drive {
   //TEST #003:  Load a sheet with some formulas ex. =TRUE().  Make sure they are there.
   to TestingPage
   uploadFile(absPath, "xlsxtest003.xlsx")
-  answers = ['C','Attended','TRUE','TRUE','TRUE', 'TRUE']
+  answers = ['C','Attended','TRUE','TRUE','TRUE','TRUE']
   checkColumn(3, answers)
   
   println "ALL ASSERTIONS PASSED!!!"
