@@ -1050,21 +1050,23 @@ function sheet_to_jquery_sheet_object(sheet, sheetName){
 				})];
 				console.log("Val: " + JSON.stringify(val));
 				var colObject = {};
-				if(val['formula']){
-					colObject['formula'] = val['formula'];
-				} else {
-					if(val !== undefined) switch(val.t){
-						case 's': case 'str': case 'n':
-							if(val.v !== undefined) {
-								colObject["value"] = val.v;
-							}
-							break;
-						case 'b':
-							if(val.v === true)colObject['formula'] = "TRUE()";
-							if(val.v === false)colObject['formula'] = "FALSE()";
-							break;
-						case 'e': break; /* throw */
-						default: throw 'unrecognized type ' + val.t;
+				if(val !== undefined){
+					if(val['formula']){
+						colObject['formula'] = val['formula'];
+					} else {
+						switch(val.t){
+							case 's': case 'str': case 'n':
+								if(val.v !== undefined) {
+									colObject["value"] = val.v;
+								}
+								break;
+							case 'b':
+								if(val.v === true)colObject['formula'] = "TRUE()";
+								if(val.v === false)colObject['formula'] = "FALSE()";
+								break;
+							case 'e': break; /* throw */
+							default: throw 'unrecognized type ' + val.t;
+						}
 					}
 				}
 				rowObject.columns.push(colObject);
