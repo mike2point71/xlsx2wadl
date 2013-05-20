@@ -11,7 +11,7 @@ String urlString = "file://" +  absPath + "/"
 println urlString
 
 class TestingPage extends Page {
-    static url = "mk-xlsx1.html"
+  static url = "mk-xlsx1.html"
 }
 
 Browser.drive {
@@ -37,5 +37,7 @@ Browser.drive {
   tbody.children().eachWithIndex{tr, ndx->
     assert tr.find("td").next("td").next("td").next("td").text() == answers[ndx]
   }
+
   println "ALL ASSERTIONS PASSED!!!"
+
 }.quit()
